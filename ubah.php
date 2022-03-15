@@ -1,11 +1,34 @@
 <?php
 
 require 'function.php';
-$mahasiswa = query("SELECT * FROM mahasiswa");
+
+//ambil data di URL
+$id = $_GET["id"];
+// query data mahasiswa berdasarkan id
+
+$mhs = query("SELECT * FROM mahasiswa WHERE id = $id")[0];
+
+//cek apakah tombol submit sudah di tekan atau belum
+if (isset($_POST["submit"])) {
+    //cek apakah data berhasil di ubah atau tidak
+    if (ubah($_POST) > 0) {
+        echo "
+            <script>
+                alert('data berhasil diubah');
+                document.location.href = 'index.php';
+            </script>
+        ";
+    } else {
+        echo "
+            <script>
+                alert('data gagal diubah');
+                document.location.href = 'ubah.php';
+            </script>
+        ";
+    }
+}
 
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,47 +37,42 @@ $mahasiswa = query("SELECT * FROM mahasiswa");
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Data Mahasiswa</title>
+    <title>Ubah Data Mahasiswa</title>
 </head>
 
 <body>
 
-    <h1>Daftar Mahasiswa</h1>
+    <h1>Ubah Data Mahasiswa</h1>
 
-    <a href="tambah.php">Tambah Data</a>
-    <br><br>
+    <form action="" method="POST">
+        <input type="hidden" name="id" value="<?= $mhs["id"] ?>">
+        <ul>
+            <li>
+                <label for="nama"> NAMA : </label>
+                <input type="text" name="nama" id="nama" required value="<?= $mhs["nama"] ?>">
+            </li>
+            <li>
+                <label for="npm"> NPM : </label>
+                <input type="text" name="npm" id="npm" required value="<?= $mhs["npm"] ?>">
+            </li>
+            <li>
+                <label for="jurusan"> JURUSAN : </label>
+                <input type="text" name="jurusan" id="jurusan" required value="<?= $mhs["jurusan"] ?>">
+            </li>
+            <li>
+                <label for="email"> EMAIL : </label>
+                <input type="text" name="email" id="email" required value="<?= $mhs["email"] ?>">
+            </li>
+            <li>
+                <label for="gambar"> PHOTO : </label>
+                <input type="text" name="gambar" id="gambar" required value="<?= $mhs["gambar"] ?>">
+            </li>
+            <li>
+                <button type="submit" name="submit">Ubah Data</button>
+            </li>
+        </ul>
 
-    <table border="1" cellpadding="10" cellspacing="0">
-        <tr>
-            <th>No.</th>
-            <th>Aksi</th>
-            <th>Photo</th>
-            <th>Nama</th>
-            <th>NPM</th>
-            <th>Jurusan</th>
-            <th>Email</th>
-        </tr>
-
-        <?php $i = 1; ?>
-        <?php foreach ($mahasiswa as $row) : ?>
-            <tr>
-
-                <td> <?= $i; ?> </td>
-
-                <td>
-                    <a href="ubah.php?id=<?php echo $row["id"]; ?>">Ubah</a> |
-                    <a href="hapus.php?id=<?php echo $row["id"]; ?>" onclick="return confirm('Yakin Ingin Menghapus Data');  ">Hapus</a>
-                </td>
-                <td><img src="img/<?php echo $row["gambar"] ?>" width="50"></td>
-                <td><?php echo $row["nama"] ?></td>
-                <td><?php echo $row["npm"] ?></td>
-                <td><?php echo $row["jurusan"] ?></td>
-                <td><?php echo $row["email"] ?></td>
-            </tr>
-            <?php $i++; ?>
-        <?php endforeach; ?>
-
-    </table>
+    </form>
 
 </body>
 
